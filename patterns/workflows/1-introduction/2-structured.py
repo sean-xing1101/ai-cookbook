@@ -1,9 +1,20 @@
-import os
-
-from openai import OpenAI
 from pydantic import BaseModel
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+from openai import AzureOpenAI
+from dotenv import load_dotenv
+import os
+load_dotenv()
+#openai
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+
+#azure openai
+client = AzureOpenAI(
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
+)
 
 
 # --------------------------------------------------------------
@@ -16,7 +27,10 @@ class CalendarEvent(BaseModel):
     date: str
     participants: list[str]
 
-
+class QueryEvent(BaseModel):
+    product: str
+    date: str
+    plaform: list[str]
 # --------------------------------------------------------------
 # Step 2: Call the model
 # --------------------------------------------------------------
@@ -24,13 +38,13 @@ class CalendarEvent(BaseModel):
 completion = client.beta.chat.completions.parse(
     model="gpt-4o",
     messages=[
-        {"role": "system", "content": "Extract the event information."},
+        {"role": "system", "content": "Extract the query."},
         {
             "role": "user",
-            "content": "Alice and Bob are going to a science fair on Friday.",
+            "content": "帮我查一下Baymax14近3天的在Nova测试进展.",
         },
     ],
-    response_format=CalendarEvent,
+    response_format=QueryEvent,
 )
 
 # --------------------------------------------------------------
@@ -38,6 +52,4 @@ completion = client.beta.chat.completions.parse(
 # --------------------------------------------------------------
 
 event = completion.choices[0].message.parsed
-event.name
-event.date
-event.participants
+print(event)

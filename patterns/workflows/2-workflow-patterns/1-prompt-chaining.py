@@ -12,8 +12,21 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger(__name__)
+from openai import OpenAI,AzureOpenAI
+from dotenv import load_dotenv
+import os
+load_dotenv()
+#openai
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+#azure openai
+client = AzureOpenAI(
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
+)
 model = "gpt-4o"
 
 # --------------------------------------------------------------
@@ -169,15 +182,15 @@ def process_calendar_request(user_input: str) -> Optional[EventConfirmation]:
 # Step 4: Test the chain with a valid input
 # --------------------------------------------------------------
 
-user_input = "Let's schedule a 1h team meeting next Tuesday at 2pm with Alice and Bob to discuss the project roadmap."
-
-result = process_calendar_request(user_input)
-if result:
-    print(f"Confirmation: {result.confirmation_message}")
-    if result.calendar_link:
-        print(f"Calendar Link: {result.calendar_link}")
-else:
-    print("This doesn't appear to be a calendar event request.")
+# user_input = "Let's schedule a 1h team meeting next Tuesday at 2pm with Alice and Bob to discuss the project roadmap."
+#
+# result = process_calendar_request(user_input)
+# if result:
+#     print(f"Confirmation: {result.confirmation_message}")
+#     if result.calendar_link:
+#         print(f"Calendar Link: {result.calendar_link}")
+# else:
+#     print("This doesn't appear to be a calendar event request.")
 
 
 # --------------------------------------------------------------

@@ -13,8 +13,22 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-model = "gpt-4o-mini"
+from openai import OpenAI,AzureOpenAI
+from dotenv import load_dotenv
+import os
+load_dotenv()
+#openai
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+
+#azure openai
+client = AzureOpenAI(
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
+)
+model = "gpt-4o"
 
 # --------------------------------------------------------------
 # Step 1: Define the data models
@@ -30,7 +44,7 @@ class SubTask(BaseModel):
     target_length: int = Field(description="Target word count for this section")
 
 
-class OrchestratorPlan(BaseModel):
+class  OrchestratorPlan(BaseModel):
     """Orchestrator's blog structure and tasks"""
 
     topic_analysis: str = Field(description="Analysis of the blog topic")

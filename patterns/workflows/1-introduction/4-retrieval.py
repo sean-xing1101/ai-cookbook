@@ -4,8 +4,21 @@ import os
 from openai import OpenAI
 from pydantic import BaseModel, Field
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+from openai import OpenAI,AzureOpenAI
+from dotenv import load_dotenv
+import os
+load_dotenv()
+#openai
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+
+
+#azure openai
+client = AzureOpenAI(
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
+)
 """
 docs: https://platform.openai.com/docs/guides/function-calling
 """
@@ -75,7 +88,7 @@ def call_function(name, args):
     if name == "search_kb":
         return search_kb(**args)
 
-
+r=completion.choices[0].message
 for tool_call in completion.choices[0].message.tool_calls:
     name = tool_call.function.name
     args = json.loads(tool_call.function.arguments)
@@ -126,4 +139,6 @@ completion_3 = client.beta.chat.completions.parse(
     tools=tools,
 )
 
-completion_3.choices[0].message.content
+r = completion_3.choices[0].message.content
+a=1
+

@@ -4,9 +4,21 @@ import os
 import requests
 from openai import OpenAI
 from pydantic import BaseModel, Field
+from openai import OpenAI,AzureOpenAI
+from dotenv import load_dotenv
+import os
+load_dotenv()
+#openai
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+
+#azure openai
+client = AzureOpenAI(
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
+)
 """
 docs: https://platform.openai.com/docs/guides/function-calling
 """
@@ -66,7 +78,7 @@ completion = client.chat.completions.create(
 # Step 2: Model decides to call function(s)
 # --------------------------------------------------------------
 
-completion.model_dump()
+a = completion.model_dump()
 
 # --------------------------------------------------------------
 # Step 3: Execute get_weather function

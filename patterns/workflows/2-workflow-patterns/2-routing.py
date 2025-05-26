@@ -11,8 +11,21 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger(__name__)
+from openai import OpenAI,AzureOpenAI
+from dotenv import load_dotenv
+import os
+load_dotenv()
+#openai
+# client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+#azure openai
+client = AzureOpenAI(
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
+)
 model = "gpt-4o"
 
 # --------------------------------------------------------------
@@ -178,23 +191,22 @@ new_event_input = "Let's schedule a team meeting next Tuesday at 2pm with Alice 
 result = process_calendar_request(new_event_input)
 if result:
     print(f"Response: {result.message}")
-
 # --------------------------------------------------------------
 # Step 4: Test with modify event
 # --------------------------------------------------------------
 
-modify_event_input = (
-    "Can you move the team meeting with Alice and Bob to Wednesday at 3pm instead?"
-)
-result = process_calendar_request(modify_event_input)
-if result:
-    print(f"Response: {result.message}")
+# modify_event_input = (
+#     "Can you move the team meeting with Alice and Bob to Wednesday at 3pm instead?"
+# )
+# result = process_calendar_request(modify_event_input)
+# if result:
+#     print(f"Response: {result.message}")
 
 # --------------------------------------------------------------
 # Step 5: Test with invalid request
 # --------------------------------------------------------------
 
-invalid_input = "What's the weather like today?"
-result = process_calendar_request(invalid_input)
-if not result:
-    print("Request not recognized as a calendar operation")
+# invalid_input = "What's the weather like today?"
+# result = process_calendar_request(invalid_input)
+# if not result:
+#     print("Request not recognized as a calendar operation")
