@@ -37,7 +37,7 @@ from schemas.base import (
     ExecutionResult,
     ValidationResult
 )
-
+from agents.query_analyzner import QueryAnalyzer
 
 class PipelineRunner:
     def __init__(self):
@@ -47,6 +47,7 @@ class PipelineRunner:
         self.BusinessClassifier =BusinessClassifier()
         self.dataset_matcher = DatasetMatcher()
 
+   
     async def run_pipeline(self, user_input: str) -> Optional[dict]:
         # 步骤1：业务检查
         is_business_question = await self._check_business_relevance(user_input)
@@ -60,7 +61,16 @@ class PipelineRunner:
         # 步骤2：选择数据集
         # 步骤3：获取元数据
         _get_metadata = await self._get_metadata(user_input)
-        print(f"步骤3结果: {_get_metadata}")
+        if not _get_metadata:
+            print(f"未找到与用户提问相关的数据集元数据，问题可能不在任何已知数据集中。")
+            return None
+        # 步骤4：生成查询计划
+        query_plan = await self._generate_query_plan(user_input, _get_metadata)
+        a=1
+        print(f"步骤4结果: {query_plan}")
+
+        return query_plan
+
         # retry_count = 0
         # while retry_count < self.max_retries:
         #     # 步骤4：生成查询计划
@@ -101,6 +111,11 @@ class PipelineRunner:
         # 调用metadata_service的实现
         dataset_info = await self._chose_dataset(question)
         return await self.metadata_service.get_metadata(dataset_info.dataset_id) if dataset_info.dataset_id else None
+    
+    async def _generate_query_plan(self, question: str, metadata: DatasetMetadata) -> QueryPlan:
+        """生成查询计划"""
+        return await QueryAnalyzer().analyze(question, metadata)
+
 
 
 

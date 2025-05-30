@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 
 class BusinessCheckResult(BaseModel):
@@ -45,10 +45,10 @@ class DatasetMetadata(BaseModel):
     tables: List[TableInfo]
 
 class QueryPlan(BaseModel):
-    target_tables: List[str]
-    required_columns: List[str]
-    filters: Dict[str, str]
-    join_conditions: List[Dict] = []
+    target_tables: List[str] = Field(default_factory=list, description="Target tables for the query plan")
+    required_columns: List[str] = Field(default_factory=list, description="Required columns for the query plan")
+    filters: Optional[Dict[str, str]] = Field(default_factory=dict, description="Optional filters for the query plan")
+    join_conditions: Optional[List[Dict[str, str]]] = Field(default_factory=list, description="Optional join conditions for the query plan")
 
 class DAXRequest(BaseModel):
     question: str

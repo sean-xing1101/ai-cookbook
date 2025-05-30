@@ -33,11 +33,11 @@ class MetadataService:
         print('metadata do not have dataset id: {}'.format(dataset_id))
         return None
 
-    async def get_metadata(self, dataset_id: str) -> DatasetMetadata:
+    async def get_metadata(self, dataset_id: str) -> Optional[DatasetMetadata]:
         """获取数据集元数据"""
         meta_json = self._load_dataset_from_json(dataset_id)
         if meta_json is None:
-            raise ValueError(f"Dataset with ID {dataset_id} not found in metadata.")
+            return None
         return meta_json
 
 # 示例调用
